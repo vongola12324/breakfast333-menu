@@ -311,3 +311,9 @@ Temporary Items
 # Built Visual Studio Code Extensions
 *.vsix
 
+### Project
+public/menu.json
+public/locales.json
+!public/locales/.gitkeep
+public/locales/*
+.env
