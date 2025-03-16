@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -25,7 +25,17 @@ jobs:
         uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      
+      - name: Build menu from Google Sheets
+        env:
+          APP_ENV: ${{ vars.APP_ENV }}
+          MENU_JSON: ${{ vars.MENU_JSON }}
+          LOCALE_JSON: ${{ vars.LOCALE_JSON }}
+          LOCALES_FOLDER: ${{ vars.LOCALES_FOLDER }}
+          PRICING_URL: ${{ secrets.PRICING_URL }}
+          I18N_URL: ${{ secrets.I18N_URL }}
+        run: |
+          deno task build:menu
+
       - name: Build
         run: |
           deno task build
