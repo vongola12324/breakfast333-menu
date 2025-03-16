@@ -3,7 +3,8 @@
     <select 
       v-model="currentLocale" 
       @change="changeLocale"
-      class="w-full max-w-[180px] sm:w-auto px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-base"
+      class="w-full max-w-[180px] sm:w-auto px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none 
+      focus:ring-2 focus:ring-primary focus:border-primary text-base"
     >
       <option v-for="locale in availableLocales" :key="locale.key" :value="locale.key">
         {{ locale.text }}
@@ -13,9 +14,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { SUPPORT_LOCALES } from '../i18n.ts';
+import { getAvailableLocales } from '../i18n.ts';
 import { useMenuStore } from '../store.ts';
 
 // These must be at the top level of the setup function
@@ -24,12 +25,7 @@ const menuStore = useMenuStore();
 const currentLocale = ref(i18n.locale.value);
 
 // Available locales
-const availableLocales = [
-  { key: 'zh-Hant-TW', text: '中文(繁體)' },
-  { key: 'en_US', text: 'English' },
-  { key: 'jp_ja', text: '日本語' },
-  { key: 'ko_KR', text: '한국어' }
-];
+const availableLocales = getAvailableLocales();
 
 // Change locale
 async function changeLocale() {

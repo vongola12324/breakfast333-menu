@@ -4,9 +4,9 @@ import { createI18n, I18n } from 'vue-i18n';
 // Import locales configuration
 const localesConfig = [
   {
-    "key": "zh-Hant-TW",
+    "key": "zh_TW",
     "text": "中文(繁體)",
-    "json": "public/locales/zh-Hant-TW.json"
+    "json": "public/locales/zh_TW.json"
   },
   {
     "key": "en_US",
@@ -25,10 +25,17 @@ const localesConfig = [
   }
 ];
 
-export const SUPPORT_LOCALES: string[] = localesConfig.map((config) => config.key);
+export function getAvailableLocales() {
+  return localesConfig.map((config) => {
+    return {
+      "key": config.key,
+      "text": config.text
+    };
+  })
+}
 
 export function isLocaleSupported(locale: string) {
-  return SUPPORT_LOCALES.includes(locale);
+  return localesConfig.map((config) => config.key).includes(locale);
 }
 
 export function setupI18n(options: { locale: string; fallbackLocale: string }) {
@@ -46,7 +53,7 @@ export function setupI18n(options: { locale: string; fallbackLocale: string }) {
     
     // Map browser language to our supported locales
     if (browserLang.startsWith('zh')) {
-      detectedLocale = 'zh-Hant-TW';
+      detectedLocale = 'zh_TW';
     } else if (browserLang.startsWith('ja')) {
       detectedLocale = 'jp_ja';
     } else if (browserLang.startsWith('ko')) {
@@ -54,8 +61,8 @@ export function setupI18n(options: { locale: string; fallbackLocale: string }) {
     }
     
     // Only use detected locale if it's in our supported locales
-    if (!SUPPORT_LOCALES.includes(detectedLocale)) {
-      detectedLocale = '';
+    if (!isLocaleSupported(detectedLocale)) {
+      detectedLocale = 'zh_TW';
     }
   }
   

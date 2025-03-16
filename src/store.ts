@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import { useI18n } from 'vue-i18n';
+import { useI18n } from 'vue-i18n'
+
 
 export interface MenuItem {
   id: string;
@@ -107,6 +108,7 @@ export const useMenuStore = defineStore('menu', {
     
     // Helper method to translate keys using the current locale
     translateKey(key: string, defaultValue: string = key): string {
+      const i18n = useI18n();
       try {
         // Try to use the i18n instance to translate the key
         // Since we can't directly access the i18n instance here,
@@ -114,13 +116,16 @@ export const useMenuStore = defineStore('menu', {
         
         // First, try to get the translation from the window object
         // This is a workaround since we can't directly use useI18n() in a store
-        const translations = (window as any).__VUE_I18N_TRANSLATIONS__;
-        const currentLocale = document.querySelector('html')?.getAttribute('lang') || 'en_US';
-        
-        if (translations && translations[currentLocale] && translations[currentLocale][key]) {
-          return translations[currentLocale][key];
+        const translations = i18n.messages.value;
+        let currentLocale = document.querySelector('html')?.getAttribute('lang') || 'zh_TW';
+        if (translations) {
+          if (!(currentLocale in translations)) {
+            currentLocale = 'zh_TW';
+          }
+          if (translations[currentLocale][key]) {
+            return translations[currentLocale][key];
+          }
         }
-        
         // If not found, use the formatted key as fallback
         if (key.startsWith('CATEGORY_')) {
           return key.replace('CATEGORY_', '');

@@ -20,7 +20,8 @@
         </p>
         <button 
           @click="reloadPage" 
-          class="bg-primary hover:bg-primary/90 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-md w-full sm:w-auto transition-colors"
+          class="bg-primary hover:bg-primary/90 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-md
+           w-full sm:w-auto transition-colors"
         >
           {{ t('RELOAD_PAGE', 'Reload Page') }}
         </button>
@@ -29,7 +30,7 @@
     </main>
     
     <footer class="mt-6 sm:mt-8 lg:mt-10 text-center text-xs sm:text-sm text-lightText px-2 sm:px-4">
-      <p v-html="t('ANNONCEMENT_OPEN_HOUR')" class="mb-2"></p>
+      <p v-html="t('ANNONCEMENT_OPEN_HOUR')" class="mb-2"/>
       <p>&copy; {{ new Date().getFullYear() }} Breakfast333. {{ t('ALL_RIGHTS_RESERVED', 'All rights reserved.') }}</p>
     </footer>
   </div>

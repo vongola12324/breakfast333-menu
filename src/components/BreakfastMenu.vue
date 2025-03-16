@@ -1,7 +1,9 @@
 <template>
   <div class="mt-4 sm:mt-6 lg:mt-8">
     <!-- Category filters -->
-    <div class="flex overflow-x-auto pb-2 mb-6 gap-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+    <div class="flex overflow-x-auto pb-2 mb-6 gap-2 scrollbar-thin scrollbar-thumb-gray-300
+     scrollbar-track-transparent"
+     >
       <button 
         v-for="category in categories" 
         :key="category"
@@ -30,13 +32,11 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useMenuStore } from '../store.ts';
 import { useTranslation } from '../composables/useTranslation.ts';
 import BreakfastMenuItem from './BreakfastMenuItem.vue';
 
 // Use i18n
-const { t } = useI18n();
 const { translate } = useTranslation();
 
 // Use the menu store
