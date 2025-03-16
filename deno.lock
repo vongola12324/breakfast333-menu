@@ -1,6 +1,11 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@std/bytes@^1.0.5": "1.0.5",
+    "jsr:@std/csv@*": "1.0.5",
+    "jsr:@std/csv@^1.0.5": "1.0.5",
+    "jsr:@std/dotenv@*": "0.225.3",
+    "jsr:@std/streams@^1.0.8": "1.0.9",
     "npm:@eslint/js@^9.22.0": "9.22.0",
     "npm:@types/node@*": "22.5.4",
     "npm:@typescript-eslint/eslint-plugin@^8.26.1": "8.26.1_@typescript-eslint+parser@8.26.1__eslint@9.22.0__typescript@5.7.3_eslint@9.22.0_typescript@5.7.3",
@@ -25,6 +30,26 @@
     "npm:vue-i18n@9.2.2": "9.2.2_vue@3.3.4",
     "npm:vue-router@4.2.4": "4.2.4_vue@3.3.4",
     "npm:vue@3.3.4": "3.3.4"
+  },
+  "jsr": {
+    "@std/bytes@1.0.5": {
+      "integrity": "4465dd739d7963d964c809202ebea6d5c6b8e3829ef25c6a224290fbb8a1021e"
+    },
+    "@std/csv@1.0.5": {
+      "integrity": "02006ffd77e84b2bf01968d4e792f0b5cba057c73dc6a89accb96d803493675f",
+      "dependencies": [
+        "jsr:@std/streams"
+      ]
+    },
+    "@std/dotenv@0.225.3": {
+      "integrity": "a95e5b812c27b0854c52acbae215856d9cce9d4bbf774d938c51d212711e8d4a"
+    },
+    "@std/streams@1.0.9": {
+      "integrity": "a9d26b1988cdd7aa7b1f4b51e1c36c1557f3f252880fa6cc5b9f37078b1a5035",
+      "dependencies": [
+        "jsr:@std/bytes"
+      ]
+    }
   },
   "npm": {
     "@alloc/quick-lru@5.2.0": {
@@ -2205,6 +2230,7 @@
   },
   "workspace": {
     "dependencies": [
+      "jsr:@std/csv@^1.0.5",
       "npm:@eslint/js@^9.22.0",
       "npm:@typescript-eslint/eslint-plugin@^8.26.1",
       "npm:@typescript-eslint/parser@^8.26.1",

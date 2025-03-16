@@ -8,24 +8,44 @@ import { useMenuStore } from "./store.ts";
 // Create Pinia store
 const pinia = createPinia();
 
-// Setup i18n
-const i18n = setupI18n({
-  locale: 'en_US',
-  fallbackLocale: 'en_US',
-});
-
 // Create Vue app
 const app = createApp(App);
 
-// Add Pinia store and i18n
+// Add Pinia store
 app.use(pinia);
-app.use(i18n);
 
-// Mount the app immediately
-app.mount("#app");
+// Initialize app asynchronously
+async function initApp() {
+  try {
+    // Setup i18n (now async)
+    const i18n = await setupI18n({
+      locale: 'en_US',
+      fallbackLocale: 'en_US',
+    });
+    
+    // Add i18n to app
+    app.use(i18n);
+    
+    // Mount the app
+    app.mount("#app");
+    
+    return { i18n };
+  } catch (error) {
+    console.error('Failed to initialize app:', error);
+    throw error;
+  }
+}
+
+// Start initialization
+initApp().then(({ i18n }) => {
+  // Continue with setup after app is mounted
+  setupApp(i18n);
+}).catch(error => {
+  console.error('App initialization failed:', error);
+});
 
 // Load menu data and locale messages
-async function setupApp() {
+async function setupApp(i18n: any) {
   try {
     // Load initial locale messages
     console.log('Loading initial locale messages...');
@@ -77,5 +97,4 @@ async function setupApp() {
   }
 }
 
-// Start setup process
-setupApp();
+// The setupApp function is now called from the initApp().then() callback above

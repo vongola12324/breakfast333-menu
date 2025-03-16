@@ -30,8 +30,8 @@
     </main>
     
     <footer class="mt-6 sm:mt-8 lg:mt-10 text-center text-xs sm:text-sm text-lightText px-2 sm:px-4">
-      <p v-html="t('ANNONCEMENT_OPEN_HOUR')" class="mb-2"/>
-      <p>&copy; {{ new Date().getFullYear() }} Breakfast333. {{ t('ALL_RIGHTS_RESERVED', 'All rights reserved.') }}</p>
+      <p v-html="t('ANNONCEMENT_OPEN_HOUR')" />
+      <p class="mb-2">&copy; {{ new Date().getFullYear() }} Breakfast333. {{ t('ALL_RIGHTS_RESERVED', 'All rights reserved.') }}</p>
     </footer>
   </div>
 </template>

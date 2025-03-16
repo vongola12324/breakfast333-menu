@@ -13,6 +13,7 @@ class Dish {
     priceLarge: number;
     takeoutBox: boolean;
     vegetarian: boolean;
+    description: boolean;
 
     constructor(
         id: string,
@@ -20,12 +21,14 @@ class Dish {
         priceLarge: number,
         takeoutBox: string,
         vegetarian: string,
+        description: string
     ) {
         this.id = id;
         this.price = price;
         this.priceLarge = priceLarge;
-        this.takeoutBox = takeoutBox.toLowerCase() == 'v';
-        this.vegetarian = vegetarian.toLowerCase() == 'v';
+        this.takeoutBox = takeoutBox?.toLowerCase() == 'v';
+        this.vegetarian = vegetarian?.toLowerCase() == 'v';
+        this.description = description?.toLowerCase() == 'v';
     }
 
     public toJson = (): object => ({
@@ -88,6 +91,7 @@ class Loader {
                     parseInt(data[index]['price-large']),
                     data[index]['takeout-box'],
                     data[index]['vegetarian'],
+                    data[index]['description'],
                 );
                 if (currentCategory !== undefined) {
                     currentCategory.set(item_id, dish);

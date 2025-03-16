@@ -1,8 +1,15 @@
 import { nextTick } from 'vue';
 import { createI18n, I18n } from 'vue-i18n';
 
-// Import locales configuration
-const localesConfig = [
+// Define the locale configuration interface
+export interface LocaleConfig {
+  key: string;
+  text: string;
+  json: string;
+}
+
+// Default locales configuration to use until the JSON file is loaded
+const defaultLocalesConfig: LocaleConfig[] = [
   {
     "key": "zh_TW",
     "text": "中文(繁體)",
@@ -12,33 +19,93 @@ const localesConfig = [
     "key": "en_US",
     "text": "English",
     "json": "public/locales/en_US.json"
-  },
-  {
-    "key": "jp_ja",
-    "text": "日本語",
-    "json": "public/locales/jp_ja.json"
-  },
-  {
-    "key": "ko_KR",
-    "text": "한국어",
-    "json": "public/locales/ko_KR.json"
   }
 ];
 
-export function getAvailableLocales() {
+// We'll load the locales configuration from the JSON file
+let localesConfig: LocaleConfig[] = [...defaultLocalesConfig];
+let localesLoaded = false;
+
+// Function to load locales configuration
+async function loadLocalesConfig(): Promise<LocaleConfig[]> {
+  if (localesLoaded) {
+    return localesConfig;
+  }
+  
+  try {
+    // Try different paths to find the locales.json file
+    let response;
+    
+    // First try with base path
+    response = await fetch('/locales.json');
+    if (!response.ok) {
+      // Then try with the base path from vite.config.ts
+      response = await fetch('/breakfast333-menu/locales.json');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch locales.json: ${response.status} ${response.statusText}`);
+      }
+    }
+    
+    const config = await response.json();
+    console.log('Locales configuration loaded successfully');
+    localesLoaded = true;
+    return config;
+  } catch (e) {
+    console.error('Failed to load locales configuration:', e);
+    // Return default configuration if fetch fails
+    return defaultLocalesConfig;
+  }
+}
+
+// Initialize locales config
+loadLocalesConfig().then(config => {
+  localesConfig = config;
+});
+
+export async function getAvailableLocales() {
+  // Ensure locales are loaded
+  if (!localesLoaded) {
+    localesConfig = await loadLocalesConfig();
+  }
+  
   return localesConfig.map((config) => {
     return {
       "key": config.key,
       "text": config.text
     };
-  })
+  });
 }
 
-export function isLocaleSupported(locale: string) {
+// Synchronous version for immediate use
+export function getAvailableLocalesSync() {
+  return localesConfig.map((config) => {
+    return {
+      "key": config.key,
+      "text": config.text
+    };
+  });
+}
+
+export async function isLocaleSupported(locale: string) {
+  // Ensure locales are loaded
+  if (!localesLoaded) {
+    localesConfig = await loadLocalesConfig();
+  }
+  
   return localesConfig.map((config) => config.key).includes(locale);
 }
 
-export function setupI18n(options: { locale: string; fallbackLocale: string }) {
+// Synchronous version for immediate use
+export function isLocaleSupportedSync(locale: string) {
+  return localesConfig.map((config) => config.key).includes(locale);
+}
+
+export async function setupI18n(options: { locale: string; fallbackLocale: string }) {
+  // Ensure locales are loaded
+  if (!localesLoaded) {
+    localesConfig = await loadLocalesConfig();
+  }
+  
   // Try to get the saved locale from localStorage
   let savedLocale = '';
   if (typeof window !== 'undefined' && window.localStorage) {
@@ -61,7 +128,7 @@ export function setupI18n(options: { locale: string; fallbackLocale: string }) {
     }
     
     // Only use detected locale if it's in our supported locales
-    if (!isLocaleSupported(detectedLocale)) {
+    if (!isLocaleSupportedSync(detectedLocale)) {
       detectedLocale = 'zh_TW';
     }
   }

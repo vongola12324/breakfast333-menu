@@ -1,14 +1,17 @@
 {
   "tasks": {
-    "dev": "deno run -A --node-modules-dir npm:vite",
-    "build": "deno run -A --node-modules-dir npm:vite build",
-    "preview": "deno run -A --node-modules-dir npm:vite preview",
+    "dev": "deno run -A npm:vite",
+    "build": "deno run -A npm:vite build",
+    "build:menu": "deno run -A tools/buildMenu.ts",
+    "preview": "deno run -A npm:vite preview",
     "serve": "deno run --allow-net --allow-read https://deno.land/std@0.190.0/http/file_server.ts dist/",
-    "lint": "deno run -A --node-modules-dir npm:eslint src/ --ext .vue,.js,.ts",
-    "lint:fix": "deno run -A --node-modules-dir npm:eslint src/ --ext .vue,.js,.ts --fix"
+    "lint": "deno run -A npm:eslint src/ --ext .vue,.js,.ts",
+    "lint:fix": "deno run -A npm:eslint src/ --ext .vue,.js,.ts --fix"
   },
+  "nodeModulesDir": "auto",
   "imports": {
     "@eslint/js": "npm:@eslint/js@^9.22.0",
+    "@std/csv": "jsr:@std/csv@^1.0.5",
     "@typescript-eslint/eslint-plugin": "npm:@typescript-eslint/eslint-plugin@^8.26.1",
     "@typescript-eslint/parser": "npm:@typescript-eslint/parser@^8.26.1",
     "eslint": "npm:eslint@^9.22.0",

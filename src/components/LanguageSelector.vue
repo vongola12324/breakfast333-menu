@@ -14,9 +14,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getAvailableLocales } from '../i18n.ts';
+import { getAvailableLocalesSync } from '../i18n.ts';
 import { useMenuStore } from '../store.ts';
 
 // These must be at the top level of the setup function
@@ -24,8 +24,8 @@ const i18n = useI18n();
 const menuStore = useMenuStore();
 const currentLocale = ref(i18n.locale.value);
 
-// Available locales
-const availableLocales = getAvailableLocales();
+// Available locales - use the sync version to avoid async issues in the template
+const availableLocales = computed(() => getAvailableLocalesSync());
 
 // Change locale
 async function changeLocale() {
