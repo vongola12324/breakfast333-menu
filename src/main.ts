@@ -64,18 +64,7 @@ async function setupApp(i18n: any) {
     
     try {
       // Try different paths to find the menu.json file
-      let menuResponse;
-      
-      // First try with base path
-      menuResponse = await fetch('/menu.json');
-      if (!menuResponse.ok) {
-        // Then try with the base path from vite.config.ts
-        menuResponse = await fetch('/breakfast333-menu/menu.json');
-        if (!menuResponse.ok) {
-          throw new Error(`Failed to fetch menu: ${menuResponse.status} ${menuResponse.statusText}`);
-        }
-      }
-      
+      const menuResponse = await fetch('menu.json');      
       menuData = await menuResponse.json();
       console.log('Menu loaded successfully');
     } catch (e) {

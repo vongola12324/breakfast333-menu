@@ -25,7 +25,7 @@
         v-if="props.item.description" 
         class="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4 flex-grow"
       >
-        {{ props.item.description }}
+        {{ t(props.item.description) }}
       </p>
       
       <!-- Price and category -->
@@ -33,12 +33,9 @@
         <span class="font-bold text-base sm:text-lg">
           NT${{ props.item.price.toFixed(0) }}
           <span v-if="props.item.priceLarge" class="text-xs sm:text-sm text-gray-500">
-            / ${{ props.item.priceLarge.toFixed(0) }}
+            / NT${{ (props.item.price + props.item.priceLarge).toFixed(0) }} ({{ t('LARGE_SIZE') }})
           </span>
         </span>
-        <!-- <span class="bg-secondary text-gray-700 px-2 py-1 rounded-full text-xs inline-block">
-          {{ props.item.category }}
-        </span> -->
       </div>
       
       <!-- Takeout notice -->
@@ -46,7 +43,7 @@
         v-if="props.item.takeoutBox" 
         class="mt-2 text-xs bg-yellow-100 text-gray-700 p-2 rounded"
       >
-        {{ t('ANNONCEMENT_TAKEOUT_BOX', { takeout_box_price: 5 }) }}
+        {{ t('ANNONCEMENT_TAKEOUT_BOX', { takeout_box_price: 2 }) }}
       </div>
     </div>
   </div>

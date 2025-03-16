@@ -5,7 +5,7 @@ import { useI18n } from 'vue-i18n'
 export interface MenuItem {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   price: number;
   category: string;
   image: string;
@@ -22,6 +22,7 @@ export interface MenuData {
       priceLarge: number;
       takeoutBox: boolean;
       vegetarian: boolean;
+      description: boolean;
     }
   }
 }
@@ -85,7 +86,7 @@ export const useMenuStore = defineStore('menu', {
             items.push({
               id: itemKey,
               name: itemKey,
-              description: '',
+              description: item.description ? `${itemKey}_DESC` : undefined,
               price: item.price,
               category: categoryName,
               image: imageUrl,

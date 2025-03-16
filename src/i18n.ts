@@ -34,18 +34,7 @@ async function loadLocalesConfig(): Promise<LocaleConfig[]> {
   
   try {
     // Try different paths to find the locales.json file
-    let response;
-    
-    // First try with base path
-    response = await fetch('/locales.json');
-    if (!response.ok) {
-      // Then try with the base path from vite.config.ts
-      response = await fetch('/breakfast333-menu/locales.json');
-      if (!response.ok) {
-        throw new Error(`Failed to fetch locales.json: ${response.status} ${response.statusText}`);
-      }
-    }
-    
+    const response = await fetch('locales.json');
     const config = await response.json();
     console.log('Locales configuration loaded successfully');
     localesLoaded = true;
@@ -168,17 +157,7 @@ export async function loadLocaleMessages(i18n: I18n, locale: string) {
     
     try {
       // Try different paths to find the locale file
-      let response;
-      
-      // First try with base path
-      response = await fetch(`/locales/${locale}.json`);
-      if (!response.ok) {
-        // Then try with the base path from vite.config.ts
-        response = await fetch(`/breakfast333-menu/locales/${locale}.json`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch locale ${locale}: ${response.status} ${response.statusText}`);
-        }
-      }
+      const response = await fetch(`locales/${locale}.json`);
       
       messages = await response.json();
       console.log(`Locale ${locale} loaded successfully`);

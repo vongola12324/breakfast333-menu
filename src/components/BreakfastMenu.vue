@@ -63,7 +63,6 @@ const translatedMenuItems = computed(() => {
     ...item,
     name: translate(item.id),
     category: translate(`CATEGORY_${item.category}`),
-    description: translate(`${item.id}_DESC`, '')
   }));
 });
 </script>

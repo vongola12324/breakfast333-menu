@@ -35,18 +35,7 @@ async function changeLocale() {
     // Load locale messages if not loaded yet
     try {
       // Try different paths to find the locale file
-      let response;
-      
-      // First try with base path
-      response = await fetch(`/locales/${currentLocale.value}.json`);
-      if (!response.ok) {
-        // Then try with the base path from vite.config.ts
-        response = await fetch(`/breakfast333-menu/locales/${currentLocale.value}.json`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch locale ${currentLocale.value}: ${response.status} ${response.statusText}`);
-        }
-      }
-      
+      const response = await fetch(`locales/${currentLocale.value}.json`);      
       const messages = await response.json();
       console.debug(`Locale ${currentLocale.value} loaded successfully`);
       
