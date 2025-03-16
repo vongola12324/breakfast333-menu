@@ -1,26 +1,25 @@
 {
-    "tasks": {
-        "dev": "deno run -A --node-modules-dir npm:vite",
-        "build": "deno run -A --node-modules-dir npm:vite build",
-        "preview": "deno run -A --node-modules-dir npm:vite preview",
-        "serve": "deno run --allow-net --allow-read jsr:@std/http@1/file-server dist/",
-        "load-menu": "deno run --allow-net --allow-env --allow-read --allow-write utils/reloadMenu.ts"
-    },
-    "compilerOptions": {
-        "lib": ["ES2020", "DOM", "DOM.Iterable"]
-    },
-    "imports": {
-        "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.0",
-        "@std/csv": "jsr:@std/csv@^1.0.5",
-        "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
-        "@vitejs/plugin-vue": "npm:@vitejs/plugin-vue@^5.2.1",
-        "vite": "npm:vite@^6.0.1",
-        "vue": "npm:vue@^3.5.13"
-    },
-    "fmt": {
-        "lineWidth": 120,
-        "indentWidth": 4,
-        "semiColons": true,
-        "singleQuote": true
-    }
+  "tasks": {
+    "dev": "deno run -A --node-modules-dir npm:vite",
+    "build": "deno run -A --node-modules-dir npm:vite build",
+    "preview": "deno run -A --node-modules-dir npm:vite preview",
+    "serve": "deno run --allow-net --allow-read https://deno.land/std@0.190.0/http/file_server.ts dist/"
+  },
+  "imports": {
+    "vite-plugin-vue-devtools": "npm:vite-plugin-vue-devtools@^7.7.2",
+    "vue": "npm:vue@3.3.4",
+    "vue-router": "npm:vue-router@4.2.4",
+    "vue-i18n": "npm:vue-i18n@9.2.2",
+    "pinia": "npm:pinia@2.1.6",
+    "vite": "npm:vite@4.4.9",
+    "@vitejs/plugin-vue": "npm:@vitejs/plugin-vue@4.3.4",
+    "tailwindcss": "npm:tailwindcss@3.3.3",
+    "postcss": "npm:postcss@8.4.31",
+    "autoprefixer": "npm:autoprefixer@10.4.16"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "lib": ["dom", "dom.iterable", "esnext", "deno.ns"]
+  }
 }

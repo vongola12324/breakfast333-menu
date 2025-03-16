@@ -1,3 +1,4 @@
+/// <reference lib="deno.ns" />
 import 'jsr:@std/dotenv/load';
 import { parse as parseCsv } from 'jsr:@std/csv';
 
@@ -88,7 +89,7 @@ class Loader {
                     data[index]['takeout-box'],
                     data[index]['vegetarian'],
                 );
-                if (currentCategory != undefined) {
+                if (currentCategory !== undefined) {
                     currentCategory.set(item_id, dish);
                 } else {
                     console.error(`Skip row(${index}): ${item_id}, no category found.`);
@@ -131,11 +132,8 @@ class Loader {
         data.forEach((row) => {
             const row_id = row['id'];
             Object.keys(row).forEach((key) => {
-                if (key !== 'id') {
-                    const locale = result.get(key);
-                    if (locale !== undefined && row[key] !== '') {
-                        locale.set(row_id, row[key]);
-                    }
+                if (key !== 'id' && row[key] !== '') {
+                    result.get(key)!.set(row_id, row[key]);
                 }
             });
         });
@@ -149,14 +147,11 @@ class Loader {
         const jsonSpace = this.config.appEnv in JSON_SPACE ? JSON_SPACE[this.config.appEnv] : 0;
         const localesObj = [];
         for (const locale_key of locales.keys()) {
-            const locale = locales.get(locale_key);
-            if (locale !== undefined) {
-                localesObj.push({
-                    key: locale_key,
-                    text: locale.get('LOCALE_TEXT'),
-                    json: `${this.config.localesFolderPath}/${locale_key}.json`,
-                });
-            }
+            localesObj.push({
+                key: locale_key,
+                text: locales!.get(locale_key)!.get('LOCALE_TEXT'),
+                json: `${this.config.localesFolderPath}/${locale_key}.json`,
+            });
         }
         // locale.json
         await Deno.writeTextFile(
@@ -165,14 +160,11 @@ class Loader {
         );
         // locales/{locale}.json
         for (const localeConfig of localesObj) {
-            const locale = locales.get(localeConfig['key']);
-            if (locale !== undefined) {
-                const localeObj = Object.fromEntries(locale.entries());
-                await Deno.writeTextFile(
-                    localeConfig['json'],
-                    JSON.stringify(localeObj, null, jsonSpace),
-                );
-            }
+            const localeObj = Object.fromEntries(locales!.get(localeConfig['key'])!.entries());
+            await Deno.writeTextFile(
+                localeConfig['json'],
+                JSON.stringify(localeObj, null, jsonSpace),
+            );
         }
     }
 }

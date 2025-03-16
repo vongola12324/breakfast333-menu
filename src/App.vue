@@ -1,32 +1,51 @@
-<script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <img src="/images/vite-deno.svg" alt="Vite with Deno" />
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/images/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+    <header class="text-center mb-4 sm:mb-6 lg:mb-8">
+      <LanguageSelector />
+      <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-2">
+        {{ t('APP_TITLE', 'Breakfast333 Menu') }}
+      </h1>
+      <p class="text-base sm:text-lg md:text-xl text-lightText">
+        {{ t('APP_TAGLINE', 'Start your day with our delicious breakfast options') }}
+      </p>
+    </header>
+    
+    <main>
+      <div v-if="menuStore.menuLoadError" class="bg-red-50 rounded-lg p-4 sm:p-6 lg:p-8 text-center my-4 sm:my-6">
+        <h2 class="text-xl sm:text-2xl md:text-3xl text-red-600 font-bold mb-3 sm:mb-4">
+          {{ t('ERROR_MENU_LOAD_TITLE', 'Menu Loading Error') }}
+        </h2>
+        <p class="text-gray-600 mb-4 sm:mb-6">
+          {{ t('ERROR_MENU_LOAD_MESSAGE', 'We could not load the menu data. Please try again later.') }}
+        </p>
+        <button 
+          @click="reloadPage" 
+          class="bg-primary hover:bg-primary/90 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-md w-full sm:w-auto transition-colors"
+        >
+          {{ t('RELOAD_PAGE', 'Reload Page') }}
+        </button>
+      </div>
+      <BreakfastMenu v-else />
+    </main>
+    
+    <footer class="mt-6 sm:mt-8 lg:mt-10 text-center text-xs sm:text-sm text-lightText px-2 sm:px-4">
+      <p v-html="t('ANNONCEMENT_OPEN_HOUR')" class="mb-2"></p>
+      <p>&copy; {{ new Date().getFullYear() }} Breakfast333. {{ t('ALL_RIGHTS_RESERVED', 'All rights reserved.') }}</p>
+    </footer>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import BreakfastMenu from './components/BreakfastMenu.vue';
+import LanguageSelector from './components/LanguageSelector.vue';
+import { useMenuStore } from './store';
+
+const { t } = useI18n();
+const menuStore = useMenuStore();
+
+// Function to reload the page
+const reloadPage = () => {
+  window.location.reload();
+};
+</script>
