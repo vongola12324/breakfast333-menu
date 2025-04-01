@@ -317,7 +317,7 @@ const confirmAddToCart = () => {
   // Start animation
   isAddingToCart.value = true;
   
-  const isLargeSize = selectedSize.value === 'LARGE_SIZE';
+  const size = selectedSize.value ? selectedSize.value : undefined;
   
   // Only pass sweetness if the item has that option
   const sweetness = hasSweetnessOption.value ? selectedSweetness.value : undefined;
@@ -328,7 +328,7 @@ const confirmAddToCart = () => {
   // Add to cart with all selected options
   menuStore.addToCart(
     menuStore.selectedItemForCustomization, 
-    isLargeSize, 
+    size, 
     sweetness, 
     temperature,
     hasFlavorOptions.value ? selectedFlavors.value : []

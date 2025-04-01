@@ -52,30 +52,31 @@
         <div v-else class="flex-grow">
           <div 
             v-for="(item, index) in cartItems" 
-            :key="`${item.menuItem.id}-${item.isLargeSize ? 'large' : 'regular'}-${item.sweetness || ''}-${item.temperature || ''}-${item.selectedFlavors ? item.selectedFlavors.join('-') : ''}`"
+            :key="`${item.menuItem.id}-${item.size || ''}-${item.sweetness || ''}-${item.temperature || ''}-${item.selectedFlavors ? item.selectedFlavors.join('-') : ''}`"
             class="py-3 border-b flex justify-between items-start"
           >
             <div class="flex-grow pr-4">
               <h3 class="font-medium">{{ t(item.menuItem.id) }}</h3>
               <div class="text-sm text-gray-500">
-                <!-- Size option -->
-                <p v-if="item.isLargeSize && item.menuItem.priceLarge">
-                  {{ t('LARGE_SIZE') }}
-                </p>
-                
-                <!-- Sweetness option -->
-                <p v-if="item.sweetness">
-                  {{ t(item.sweetness) }}
-                </p>
-                
-                <!-- Temperature option -->
-                <p v-if="item.temperature">
-                  {{ t(item.temperature) }}
-                </p>
-                
-                <!-- Flavor options -->
-                <p v-if="item.selectedFlavors && item.selectedFlavors.length > 0">
-                  {{ item.selectedFlavors.map(flavor => t(flavor)).join(', ') }}
+                <p class="customization-item">
+                  <!-- Size option -->
+                  <span v-if="item.size">
+                    {{ t(item.size) }}
+                  </span>
+                  <!-- Sweetness option -->
+                  <span v-if="item.sweetness">
+                    {{ t(item.sweetness) }}
+                  </span>
+                  
+                  <!-- Temperature option -->
+                  <span v-if="item.temperature">
+                    {{ t(item.temperature) }}
+                  </span>
+                  
+                  <!-- Flavor options -->
+                  <span v-if="item.selectedFlavors && item.selectedFlavors.length > 0">
+                    {{ item.selectedFlavors.map(flavor => t(flavor)).join(', ') }}
+                  </span>
                 </p>
               </div>
               <div class="mt-1 flex items-center">
@@ -200,25 +201,27 @@
                   <!-- Always display in Chinese -->
                   <span class="text-lg font-medium">{{ t(item.menuItem.id, {}, {locale: 'zh-TW'}) }}</span>
                   <div class="text-gray-600 mt-1">
-                    <!-- Size option -->
-                    <span v-if="item.isLargeSize && item.menuItem.priceLarge" class="mr-2">
-                      {{ t('LARGE_SIZE', {}, {locale: 'zh-TW'}) }}
-                    </span>
-                    
-                    <!-- Sweetness option -->
-                    <span v-if="item.sweetness" class="mr-2">
-                      {{ t(item.sweetness, {}, {locale: 'zh-TW'}) }}
-                    </span>
-                    
-                    <!-- Temperature option -->
-                    <span v-if="item.temperature" class="mr-2">
-                      {{ t(item.temperature, {}, {locale: 'zh-TW'}) }}
-                    </span>
-                    
-                    <!-- Flavor options -->
-                    <span v-if="item.selectedFlavors && item.selectedFlavors.length > 0">
-                      {{ item.selectedFlavors.map(flavor => t(flavor, {}, {locale: 'zh-TW'})).join(', ') }}
-                    </span>
+                    <p class="customization-item">
+                      <!-- Size option -->
+                      <span v-if="item.size">
+                        {{ t(item.size, {}, {locale: 'zh-TW'}) }}
+                      </span>
+                      
+                      <!-- Sweetness option -->
+                      <span v-if="item.sweetness">
+                        {{ t(item.sweetness, {}, {locale: 'zh-TW'}) }}
+                      </span>
+                      
+                      <!-- Temperature option -->
+                      <span v-if="item.temperature">
+                        {{ t(item.temperature, {}, {locale: 'zh-TW'}) }}
+                      </span>
+                      
+                      <!-- Flavor options -->
+                      <span v-if="item.selectedFlavors && item.selectedFlavors.length > 0">
+                        {{ item.selectedFlavors.map(flavor => t(flavor, {}, {locale: 'zh-TW'})).join(', ') }}
+                      </span>
+                    </p>
                   </div>
                 </div>
                 <div class="text-right">
@@ -285,7 +288,7 @@ const takeoutBoxFee = computed(() => menuStore.takeoutBoxFee);
 // Helper function to get the price of an item
 const getItemPrice = (item: CartItem) => {
   const basePrice = item.menuItem.price;
-  const extraPrice = item.isLargeSize && item.menuItem.priceLarge ? item.menuItem.priceLarge : 0;
+  const extraPrice = item.size === 'LARGE_SIZE' && item.menuItem.priceLarge ? item.menuItem.priceLarge : 0;
   const takeoutFee = (orderType.value === 'takeout' && item.menuItem.takeoutBox) ? takeoutBoxFee.value : 0;
   return ((basePrice + extraPrice + takeoutFee) * item.quantity);
 };
@@ -322,3 +325,12 @@ const checkout = () => {
   isCartOpen.value = false;
 };
 </script>
+
+<style>
+p.customization-item span::after {
+  content: " / ";
+}
+p.customization-item span:last-child::after {
+  content: "";
+}
+</style>

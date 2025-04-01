@@ -22,7 +22,7 @@ export interface MenuItem {
 export interface CartItem {
   menuItem: MenuItem;
   quantity: number;
-  isLargeSize: boolean;
+  size?: string;
   sweetness?: string;
   temperature?: string;
   selectedFlavors?: string[];
@@ -87,7 +87,7 @@ export const useMenuStore = defineStore('menu', {
     cartTotal: (state) => {
       return state.cart.reduce((total, item) => {
         // Calculate base price based on size
-        const price = item.isLargeSize && item.menuItem.priceLarge 
+        const price = item.size == 'LARGE_SIZE' && item.menuItem.priceLarge 
           ? item.menuItem.price + item.menuItem.priceLarge 
           : item.menuItem.price;
         
@@ -131,7 +131,7 @@ export const useMenuStore = defineStore('menu', {
         this.showCustomizationModal = true;
       } else {
         // If it doesn't have options, add it directly to the cart
-        this.addToCart(item, false);
+        this.addToCart(item);
       }
     },
     
@@ -140,11 +140,11 @@ export const useMenuStore = defineStore('menu', {
       this.selectedItemForCustomization = null;
     },
     
-    addToCart(menuItem: MenuItem, isLargeSize: boolean = false, sweetness: string = '', temperature: string = '', selectedFlavors: string[] = []) {
+    addToCart(menuItem: MenuItem, size: string = '', sweetness: string = '', temperature: string = '', selectedFlavors: string[] = []) {
       // Check if the item is already in the cart with the same customizations
       const existingItemIndex = this.cart.findIndex(
         item => item.menuItem.id === menuItem.id && 
-               item.isLargeSize === isLargeSize &&
+               item.size === size &&
                item.sweetness === sweetness &&
                item.temperature === temperature &&
                JSON.stringify(item.selectedFlavors) === JSON.stringify(selectedFlavors)
@@ -158,7 +158,7 @@ export const useMenuStore = defineStore('menu', {
         this.cart.push({
           menuItem,
           quantity: 1,
-          isLargeSize,
+          size,
           sweetness,
           temperature,
           selectedFlavors
