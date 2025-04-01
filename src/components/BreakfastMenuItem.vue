@@ -66,6 +66,8 @@
 import { useI18n } from 'vue-i18n';
 import { MenuItem, useMenuStore } from '../store';
 import { ref, computed } from 'vue';
+import { toast } from "vue3-toastify";
+
 
 // Define props
 const props = defineProps<{
@@ -92,6 +94,15 @@ const selectItemForCustomization = () => {
   setTimeout(() => {
     isAnimating.value = false;
   }, 300);
+
+  toast(t('TOAST_ADD_CART_SUCCESS'), {
+    "theme": "auto",
+    "type": "success",
+    "position": "bottom-center",
+    "pauseOnHover": false,
+    "pauseOnFocusLoss": false,
+    "autoClose": 2000
+  });
 };
 </script>
 

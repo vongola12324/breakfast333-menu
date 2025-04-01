@@ -339,6 +339,15 @@ const confirmAddToCart = () => {
     isAddingToCart.value = false;
     menuStore.closeCustomizationModal();
   }, 300);
+
+  toast(t('TOAST_ADD_CART_SUCCESS'), {
+    "theme": "auto",
+    "type": "success",
+    "position": "bottom-center",
+    "pauseOnHover": false,
+    "pauseOnFocusLoss": false,
+    "autoClose": 2000
+  });
 };
 
 // Set default category to first category when component is mounted

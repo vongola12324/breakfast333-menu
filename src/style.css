@@ -13,15 +13,10 @@
 
 /* Basic styles */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'PingFang TC', 'Heiti TC', 'Noto Sans TC', 'Microsoft JhengHei', 'SimSun', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   color: #333;
   background-color: #fff;
-}
-
-/* Language-specific fonts */
-:lang(zh-TW) body {
-  font-family: 'PingFang TC', 'Heiti TC', 'Noto Sans TC', 'Microsoft JhengHei', 'SimSun', sans-serif;
 }
 
 :lang(jp-ja) body {

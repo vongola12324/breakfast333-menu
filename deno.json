@@ -25,7 +25,8 @@
     "pinia": "npm:pinia@3.0.1",
     "vite": "npm:vite@6.2.2",
     "@vitejs/plugin-vue": "npm:@vitejs/plugin-vue@5.2.1",
-    "tailwindcss": "npm:tailwindcss@4.0.14"
+    "tailwindcss": "npm:tailwindcss@4.0.14",
+    "vue3-toastify": "npm:vue3-toastify@^0.2.8"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

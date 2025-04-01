@@ -4,6 +4,8 @@ import App from "./App.vue";
 import "./style.css";
 import { setupI18n, loadLocaleMessages } from "./i18n.ts";
 import { useMenuStore } from "./store.ts";
+import "vue3-toastify/dist/index.css";
+
 
 // Create Pinia store
 const pinia = createPinia();
