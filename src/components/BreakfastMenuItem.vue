@@ -86,23 +86,27 @@ const isAnimating = ref(false);
 const selectItemForCustomization = () => {
   // Start animation
   isAnimating.value = true;
-  
-  // Call the store method to add to cart or show customization modal
-  menuStore.selectItemForCustomization(props.item);
+
+  if (menuStore.hasCustomizationOptions(props.item)) {
+    // If it has options, show the customization modal
+    menuStore.showCustomizationModal(props.item);
+  } else {
+    // If it doesn't have options, add it directly to the cart
+    menuStore.addToCart(props.item);
+    toast(t('TOAST_ADD_CART_SUCCESS'), {
+      "theme": "auto",
+      "type": "success",
+      "position": "bottom-center",
+      "pauseOnHover": false,
+      "pauseOnFocusLoss": false,
+      "autoClose": 2000
+    });
+  }
   
   // Reset animation after a short delay
   setTimeout(() => {
     isAnimating.value = false;
   }, 300);
-
-  toast(t('TOAST_ADD_CART_SUCCESS'), {
-    "theme": "auto",
-    "type": "success",
-    "position": "bottom-center",
-    "pauseOnHover": false,
-    "pauseOnFocusLoss": false,
-    "autoClose": 2000
-  });
 };
 </script>
 

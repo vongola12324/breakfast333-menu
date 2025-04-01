@@ -30,7 +30,7 @@
     
     <!-- Customization Modal -->
     <div 
-      v-if="menuStore.showCustomizationModal && menuStore.selectedItemForCustomization" 
+      v-if="menuStore.displayCustomizationModal && menuStore.selectedItemForCustomization" 
       class="fixed inset-0 bg-opacity-30 backdrop-blur-sm z-50 flex items-center justify-center"
       @click.self="menuStore.closeCustomizationModal()"
     >
@@ -175,6 +175,8 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useMenuStore } from '../store.ts';
 import { useTranslation } from '../composables/useTranslation.ts';
 import BreakfastMenuItem from './BreakfastMenuItem.vue';
+import { toast } from "vue3-toastify";
+
 
 // Use i18n
 const { translate } = useTranslation();
@@ -334,13 +336,7 @@ const confirmAddToCart = () => {
     hasFlavorOptions.value ? selectedFlavors.value : []
   );
   
-  // Reset animation and close the modal after a short delay
-  setTimeout(() => {
-    isAddingToCart.value = false;
-    menuStore.closeCustomizationModal();
-  }, 300);
-
-  toast(t('TOAST_ADD_CART_SUCCESS'), {
+  toast(translate('TOAST_ADD_CART_SUCCESS'), {
     "theme": "auto",
     "type": "success",
     "position": "bottom-center",
@@ -348,6 +344,12 @@ const confirmAddToCart = () => {
     "pauseOnFocusLoss": false,
     "autoClose": 2000
   });
+  
+  // Reset animation and close the modal after a short delay
+  setTimeout(() => {
+    isAddingToCart.value = false;
+    menuStore.closeCustomizationModal();
+  }, 300);
 };
 
 // Set default category to first category when component is mounted

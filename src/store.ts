@@ -60,7 +60,7 @@ export const useMenuStore = defineStore('menu', {
     menuLoadError: false,
     cart: [] as CartItem[],
     selectedItemForCustomization: null as MenuItem | null,
-    showCustomizationModal: false,
+    displayCustomizationModal: false,
     orderType: 'takeout' as OrderType,
     takeoutBoxFee: 10 // Default value
   }),
@@ -123,20 +123,13 @@ export const useMenuStore = defineStore('menu', {
       return Boolean(hasSizeOption || hasSweetnessOption || hasTemperatureOption || hasFlavorOptions);
     },
     
-    selectItemForCustomization(item: MenuItem) {
-      // Check if the item has any customization options
-      if (this.hasCustomizationOptions(item)) {
-        // If it has options, show the customization modal
-        this.selectedItemForCustomization = item;
-        this.showCustomizationModal = true;
-      } else {
-        // If it doesn't have options, add it directly to the cart
-        this.addToCart(item);
-      }
+    showCustomizationModal(item: MenuItem) {
+      this.selectedItemForCustomization = item;
+      this.displayCustomizationModal = true;
     },
-    
+
     closeCustomizationModal() {
-      this.showCustomizationModal = false;
+      this.displayCustomizationModal = false;
       this.selectedItemForCustomization = null;
     },
     
