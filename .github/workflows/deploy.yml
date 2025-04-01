@@ -33,13 +33,14 @@ jobs:
           LOCALES_FOLDER: ${{ vars.LOCALES_FOLDER }}
           PRICING_URL: ${{ secrets.PRICING_URL }}
           I18N_URL: ${{ secrets.I18N_URL }}
-          VITE_APP_TAGLINE: ${{ vars.VITE_APP_TAGLINE }}
-          VITE_APP_TITLE: ${{ vars.VITE_APP_TITLE }}
-          VITE_TAKEOUT_BOX_FEE: ${{ vars.VITE_TAKEOUT_BOX_FEE }}
         run: |
           deno task build:menu
 
       - name: Build
+        env: 
+          VITE_APP_TAGLINE: ${{ vars.VITE_APP_TAGLINE }}
+          VITE_APP_TITLE: ${{ vars.VITE_APP_TITLE }}
+          VITE_TAKEOUT_BOX_FEE: ${{ vars.VITE_TAKEOUT_BOX_FEE }}
         run: |
           deno task build
       
