@@ -56,7 +56,7 @@
             class="py-3 border-b flex justify-between items-start"
           >
             <div class="flex-grow pr-4">
-              <h3 class="font-medium">{{ t(item.menuItem.id) }}</h3>
+              <h3 class="font-semibold text-primary">{{ t(item.menuItem.id) }}</h3>
               <div class="text-sm text-gray-500">
                 <p class="customization-item">
                   <!-- Size option -->
@@ -194,12 +194,12 @@
         <!-- Cart Items in Chinese -->
         <div class="flex-grow mb-8">
           <h3 class="text-xl font-semibold mb-4">{{ t('CHECKOUT_HINT') }}</h3>
-          <div class="bg-gray-50 p-6 rounded-lg">
-            <ul class="space-y-4 divide-y divide-gray-200">
-              <li v-for="item in cartItems" :key="`modal-${item.menuItem.id}`" class="flex justify-between py-3">
+          <div class="bg-gray-50 px-6 py-3 rounded-lg">
+            <ul class="space-y-2 divide-y divide-gray-200">
+              <li v-for="item in cartItems" :key="`modal-${item.menuItem.id}`" class="flex justify-between pt-1 pb-2">
                 <div>
                   <!-- Always display in Chinese -->
-                  <span class="text-lg font-medium">{{ t(item.menuItem.id, {}, {locale: 'zh-TW'}) }}</span>
+                  <span class="text-lg font-semibold text-primary">{{ t(item.menuItem.id, {}, {locale: 'zh-TW'}) }}</span>
                   <div class="text-gray-600 mt-1">
                     <p class="customization-item">
                       <!-- Size option -->
@@ -226,10 +226,13 @@
                 </div>
                 <div class="text-right">
                   <div class="text-lg">x{{ item.quantity }}</div>
-                  <div class="font-medium text-lg">NT${{ getItemPrice(item).toFixed(0) }}</div>
-                  <div v-if="hasTakeoutBoxFee(item)" class="text-sm text-gray-500">
-                    ({{ t('INCLUDES_TAKEOUT_FEE', {}, {locale: 'zh-TW'}) }})
+                  <div class="font-medium">
+                    <span v-if="hasTakeoutBoxFee(item)" class="text-sm text-gray-500">
+                      ({{ t('INCLUDES_TAKEOUT_FEE', {}, {locale: 'zh-TW'}) }})
+                    </span>
+                    <span class="text-lg">NT${{ getItemPrice(item).toFixed(0) }}</span>
                   </div>
+                  
                 </div>
               </li>
             </ul>

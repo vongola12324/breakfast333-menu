@@ -25,7 +25,7 @@ body {
 }
 
 :lang(jp-ja) body {
-  font-family: 'Hiragino Sans', 'Noto Sans JP', 'Meiryo', 'MS Mincho', 'Hiragino Kaku Gothic Pro', sans-serif;
+  font-family: 'Hiragino Sans', 'Noto Sans JP', 'Meiryo', 'MS Gothic', 'Hiragino Kaku Gothic Pro', sans-serif;
 }
 
 :lang(ko-KR) body {
