@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { useI18n } from 'vue-i18n'
 
 export interface MenuItem {
   id: string;
@@ -53,6 +52,8 @@ export type OrderType = 'takeout' | 'eat-inside';
 
 export const useMenuStore = defineStore('menu', {
   state: () => ({
+    appTitle: "",
+    appTagLine: "",
     rawMenu: {} as MenuData,
     menuItems: [] as MenuItem[],
     selectedCategory: '',
@@ -99,6 +100,11 @@ export const useMenuStore = defineStore('menu', {
   },
   
   actions: {
+    setAppConfig(title: string, tagline: string) {
+      this.appTitle = title;
+      this.appTagLine = tagline;
+    },
+
     setTakeoutBoxFee(fee: number) {
       this.takeoutBoxFee = fee;
     },

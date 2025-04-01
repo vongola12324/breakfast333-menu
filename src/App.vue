@@ -3,10 +3,10 @@
     <header class="text-center mb-4 sm:mb-6 lg:mb-8">
       <LanguageSelector />
       <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-2">
-        {{ t('APP_TITLE', 'Breakfast333 Menu') }}
+        {{ t('APP_TITLE', appTitle) }}
       </h1>
       <p class="text-base sm:text-lg md:text-xl text-lightText">
-        {{ t('APP_TAGLINE', '就是個菜單，沒有點餐功能！') }}
+        {{ t('APP_TAGLINE', appTagLine) }}
       </p>
     </header>
     
@@ -38,14 +38,19 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import BreakfastMenu from './components/BreakfastMenu.vue';
 import LanguageSelector from './components/LanguageSelector.vue';
 import ShoppingCart from './components/ShoppingCart.vue';
 import { useMenuStore } from './store';
 
+
 const { t } = useI18n();
 const menuStore = useMenuStore();
+
+const appTitle = computed(() => menuStore.appTitle )
+const appTagLine = computed(() => menuStore.appTagLine )
 
 // Function to reload the page
 const reloadPage = () => {

@@ -59,19 +59,17 @@ async function setupApp(i18n: any) {
     }
     
     // Get takeout box fee from environment variable
-    console.log('Loading environment variables...');
-    const takeoutBoxFee = Number(import.meta.env.VITE_TAKEOUT_BOX_FEE); // Default to 10 if not set
-    console.log(`Takeout box fee: NT$${takeoutBoxFee}`);
+    const takeoutBoxFee = Number(import.meta.env.VITE_TAKEOUT_BOX_FEE);
+    const appTitle = String(import.meta.env.VITE_APP_TITLE);
+    const appTagLine = String(import.meta.env.VITE_APP_TAGLINE);
     
     // Load menu data
-    console.log('Loading menu data...');
     let menuData;
     
     try {
       // Try different paths to find the menu.json file
       const menuResponse = await fetch('menu.json');      
       menuData = await menuResponse.json();
-      console.log('Menu loaded successfully');
     } catch (e) {
       console.error('Failed to load menu.json:', e);
       // Set error state in the store
@@ -85,6 +83,8 @@ async function setupApp(i18n: any) {
     const menuStore = useMenuStore();
     menuStore.initializeMenu(menuData);
     
+    menuStore.setAppConfig(appTitle, appTagLine);
+
     // Set the takeout box fee in the store
     menuStore.setTakeoutBoxFee(takeoutBoxFee);
     

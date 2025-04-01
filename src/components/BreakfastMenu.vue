@@ -172,7 +172,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
-import { useMenuStore, MenuItem } from '../store.ts';
+import { useMenuStore } from '../store.ts';
 import { useTranslation } from '../composables/useTranslation.ts';
 import BreakfastMenuItem from './BreakfastMenuItem.vue';
 

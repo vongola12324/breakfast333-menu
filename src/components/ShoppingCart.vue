@@ -263,7 +263,6 @@ import { useTranslation } from '../composables/useTranslation.ts';
 
 const { t } = useI18n();
 const menuStore = useMenuStore();
-const { translate } = useTranslation();
 
 // Cart state
 const isCartOpen = ref(false);
