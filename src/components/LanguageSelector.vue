@@ -32,32 +32,49 @@ async function changeLocale() {
   try {
     console.log(`Changing locale to ${currentLocale.value}...`);
     
-    // Load locale messages if not loaded yet
-    try {
-      // Try different paths to find the locale file
-      const response = await fetch(`locales/${currentLocale.value}.json`);      
-      const messages = await response.json();
-      console.debug(`Locale ${currentLocale.value} loaded successfully`);
-      
-      // Set locale message directly
-      i18n.setLocaleMessage(currentLocale.value, messages);
-      
-      // Set language in Composition API mode
-      // @ts-ignore - In Composition API mode, locale is a ref
-      i18n.locale.value = currentLocale.value;
-      
-      // Set HTML lang attribute if in browser environment
-      if (typeof document !== 'undefined') {
-        document.querySelector('html')?.setAttribute('lang', currentLocale.value);
+    // Ensure zh_TW is loaded as fallback
+    if (!i18n.availableLocales.includes('zh_TW')) {
+      try {
+        const zhResponse = await fetch(`locales/zh_TW.json`);
+        const zhMessages = await zhResponse.json();
+        console.debug(`Fallback locale zh_TW loaded successfully`);
+        i18n.setLocaleMessage('zh_TW', zhMessages);
+      } catch (e) {
+        console.error(`Failed to load fallback locale zh_TW:`, e);
       }
-      
-      // Save the selected locale to localStorage
-      if (typeof window !== 'undefined' && window.localStorage) {
-        localStorage.setItem('breakfast333-locale', currentLocale.value);
+    }
+    
+    // Load selected locale messages if not loaded yet and it's not zh_TW
+    if (currentLocale.value !== 'zh_TW') {
+      try {
+        // Try different paths to find the locale file
+        const response = await fetch(`locales/${currentLocale.value}.json`);      
+        const messages = await response.json();
+        console.debug(`Locale ${currentLocale.value} loaded successfully`);
+        
+        // Set locale message directly
+        i18n.setLocaleMessage(currentLocale.value, messages);
+      } catch (e) {
+        console.error(`Failed to load locale ${currentLocale.value}:`, e);
+        // If we can't load the selected locale, fall back to zh_TW
+        currentLocale.value = 'zh_TW';
       }
-    } catch (e) {
-      console.error(`Failed to load locale ${currentLocale.value}:`, e);
-      return;
+    }
+    
+    // Set language in Composition API mode
+    // @ts-ignore - In Composition API mode, locale is a ref
+    i18n.locale.value = currentLocale.value;
+    
+    // Set HTML lang attribute if in browser environment
+    if (typeof document !== 'undefined') {
+      // Convert locale format from xx_YY to xx-YY for HTML lang attribute
+      const htmlLang = currentLocale.value.replace('_', '-');
+      document.querySelector('html')?.setAttribute('lang', htmlLang);
+    }
+    
+    // Save the selected locale to localStorage
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('breakfast333-locale', currentLocale.value);
     }
     
     // Reload menu data to update translations

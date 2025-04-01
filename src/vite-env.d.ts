@@ -1,7 +1,10 @@
 /// <reference types="vite/client" />
 
-declare module '*.vue' {
-  import type { DefineComponent } from 'vue'
-  const component: DefineComponent<{}, {}, unknown>
-  export default component
+interface ImportMetaEnv {
+  readonly VITE_TAKEOUT_BOX_FEE: number
+  // more env variables...
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
 }

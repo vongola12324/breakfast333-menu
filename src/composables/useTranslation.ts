@@ -1,15 +1,8 @@
-import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-
-// Create a global state to store the i18n instance
-const globalI18n = ref<any>(null);
 
 export function useTranslation() {
   // Get the i18n instance
   const i18n = useI18n();
-  
-  // Store the i18n instance in the global state
-  globalI18n.value = i18n;
   
   // Function to translate a key
   const translate = (key: string, defaultValue: string = key) => {
@@ -38,9 +31,4 @@ export function useTranslation() {
     translate,
     i18n
   };
-}
-
-// Export a function to get the global i18n instance
-export function getGlobalI18n() {
-  return globalI18n.value;
 }

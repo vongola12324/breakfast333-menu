@@ -20,7 +20,7 @@ async function initApp() {
     // Setup i18n (now async)
     const i18n = await setupI18n({
       locale: 'en_US',
-      fallbackLocale: 'en_US',
+      fallbackLocale: 'zh_TW',
     });
     
     // Add i18n to app
@@ -58,6 +58,11 @@ async function setupApp(i18n: any) {
       console.error(`Failed to load initial locale ${currentLocale}:`, e);
     }
     
+    // Get takeout box fee from environment variable
+    console.log('Loading environment variables...');
+    const takeoutBoxFee = Number(import.meta.env.VITE_TAKEOUT_BOX_FEE); // Default to 10 if not set
+    console.log(`Takeout box fee: NT$${takeoutBoxFee}`);
+    
     // Load menu data
     console.log('Loading menu data...');
     let menuData;
@@ -79,6 +84,9 @@ async function setupApp(i18n: any) {
     console.log('Initializing menu store...');
     const menuStore = useMenuStore();
     menuStore.initializeMenu(menuData);
+    
+    // Set the takeout box fee in the store
+    menuStore.setTakeoutBoxFee(takeoutBoxFee);
     
     console.log('Setup complete!');
   } catch (error) {

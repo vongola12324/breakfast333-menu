@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { useI18n } from 'vue-i18n'
 
-
 export interface MenuItem {
   id: string;
   name: string;
@@ -12,6 +11,16 @@ export interface MenuItem {
   vegetarian: boolean;
   takeoutBox: boolean;
   priceLarge?: number;
+  sugar?: boolean;
+  temperature?: string[];
+}
+
+export interface CartItem {
+  menuItem: MenuItem;
+  quantity: number;
+  isLargeSize: boolean;
+  sweetness?: string;
+  temperature?: string;
 }
 
 export interface MenuData {
@@ -23,16 +32,25 @@ export interface MenuData {
       takeoutBox: boolean;
       vegetarian: boolean;
       description: boolean;
+      sugar?: boolean;
+      temperature?: string[];
     }
   }
 }
+
+export type OrderType = 'takeout' | 'eat-inside';
 
 export const useMenuStore = defineStore('menu', {
   state: () => ({
     rawMenu: {} as MenuData,
     menuItems: [] as MenuItem[],
     selectedCategory: '',
-    menuLoadError: false
+    menuLoadError: false,
+    cart: [] as CartItem[],
+    selectedItemForCustomization: null as MenuItem | null,
+    showCustomizationModal: false,
+    orderType: 'takeout' as OrderType,
+    takeoutBoxFee: 10 // Default value
   }),
   
   getters: {
@@ -44,16 +62,112 @@ export const useMenuStore = defineStore('menu', {
     
     filteredMenuItems: (state) => {
       return state.menuItems.filter(item => item.category === state.selectedCategory);
+    },
+    
+    cartItems: (state) => {
+      return state.cart;
+    },
+    
+    cartItemCount: (state) => {
+      return state.cart.reduce((total, item) => total + item.quantity, 0);
+    },
+    
+    cartTotal: (state) => {
+      return state.cart.reduce((total, item) => {
+        // Calculate base price based on size
+        const price = item.isLargeSize && item.menuItem.priceLarge 
+          ? item.menuItem.price + item.menuItem.priceLarge 
+          : item.menuItem.price;
+        
+        // Add takeout box fee if applicable
+        const takeoutFee = (state.orderType === 'takeout' && item.menuItem.takeoutBox) ? state.takeoutBoxFee : 0;
+        
+        return total + ((price + takeoutFee) * item.quantity);
+      }, 0);
     }
   },
   
   actions: {
+    setTakeoutBoxFee(fee: number) {
+      this.takeoutBoxFee = fee;
+    },
+    
     setCategory(category: string) {
       this.selectedCategory = category;
     },
     
+    hasCustomizationOptions(item: MenuItem): boolean {
+      // Check if the item has any customization options
+      const hasSizeOption = item.priceLarge && item.priceLarge > 0;
+      const hasSweetnessOption = item.sugar === true;
+      const hasTemperatureOption = item.temperature && item.temperature.length > 0;
+      
+      return Boolean(hasSizeOption || hasSweetnessOption || hasTemperatureOption);
+    },
+    
+    selectItemForCustomization(item: MenuItem) {
+      // Check if the item has any customization options
+      if (this.hasCustomizationOptions(item)) {
+        // If it has options, show the customization modal
+        this.selectedItemForCustomization = item;
+        this.showCustomizationModal = true;
+      } else {
+        // If it doesn't have options, add it directly to the cart
+        this.addToCart(item, false);
+      }
+    },
+    
+    closeCustomizationModal() {
+      this.showCustomizationModal = false;
+      this.selectedItemForCustomization = null;
+    },
+    
+    addToCart(menuItem: MenuItem, isLargeSize: boolean = false, sweetness: string = '', temperature: string = '') {
+      // Check if the item is already in the cart with the same customizations
+      const existingItemIndex = this.cart.findIndex(
+        item => item.menuItem.id === menuItem.id && 
+               item.isLargeSize === isLargeSize &&
+               item.sweetness === sweetness &&
+               item.temperature === temperature
+      );
+      
+      if (existingItemIndex !== -1) {
+        // If the item is already in the cart with the same options, increase the quantity
+        this.cart[existingItemIndex].quantity += 1;
+      } else {
+        // Otherwise, add a new item to the cart
+        this.cart.push({
+          menuItem,
+          quantity: 1,
+          isLargeSize,
+          sweetness,
+          temperature
+        });
+      }
+    },
+    
+    removeFromCart(index: number) {
+      this.cart.splice(index, 1);
+    },
+    
+    updateCartItemQuantity(index: number, quantity: number) {
+      if (quantity <= 0) {
+        this.removeFromCart(index);
+      } else {
+        this.cart[index].quantity = quantity;
+      }
+    },
+    
+    clearCart() {
+      this.cart = [];
+    },
+    
     setMenuLoadError(hasError: boolean) {
       this.menuLoadError = hasError;
+    },
+    
+    setOrderType(type: OrderType) {
+      this.orderType = type;
     },
     
     initializeMenu(menuData: MenuData) {
@@ -92,7 +206,9 @@ export const useMenuStore = defineStore('menu', {
               image: imageUrl,
               vegetarian: item.vegetarian,
               takeoutBox: item.takeoutBox,
-              priceLarge: item.priceLarge > 0 ? item.priceLarge : undefined
+              priceLarge: item.priceLarge > 0 ? item.priceLarge : undefined,
+              sugar: item.sugar,
+              temperature: item.temperature
             });
             if (this.selectedCategory === '') {
               this.setCategory(categoryName);
@@ -104,48 +220,6 @@ export const useMenuStore = defineStore('menu', {
         this.menuItems = items;
       } catch (error) {
         console.error('Error processing menu data:', error);
-      }
-    },
-    
-    // Helper method to translate keys using the current locale
-    translateKey(key: string, defaultValue: string = key): string {
-      const i18n = useI18n();
-      try {
-        // Try to use the i18n instance to translate the key
-        // Since we can't directly access the i18n instance here,
-        // we'll use a workaround to check if the key exists in the locale files
-        
-        // First, try to get the translation from the window object
-        // This is a workaround since we can't directly use useI18n() in a store
-        const translations = i18n.messages.value;
-        let currentLocale = document.querySelector('html')?.getAttribute('lang') || 'zh_TW';
-        if (translations) {
-          if (!(currentLocale in translations)) {
-            currentLocale = 'zh_TW';
-          }
-          if (translations[currentLocale][key]) {
-            return translations[currentLocale][key];
-          }
-        }
-        // If not found, use the formatted key as fallback
-        if (key.startsWith('CATEGORY_')) {
-          return key.replace('CATEGORY_', '');
-        } else if (key.startsWith('ITEM_')) {
-          return key.replace(/^ITEM_[^_]+_/, '').replace(/_/g, ' ');
-        } else {
-          return defaultValue;
-        }
-      } catch (e) {
-        console.error(`Failed to translate key: ${key}`, e);
-        
-        // Fallback: format the key to be more readable
-        if (key.startsWith('CATEGORY_')) {
-          return key.replace('CATEGORY_', '');
-        } else if (key.startsWith('ITEM_')) {
-          return key.replace(/^ITEM_[^_]+_/, '').replace(/_/g, ' ');
-        } else {
-          return defaultValue;
-        }
       }
     },
     

@@ -51,21 +51,7 @@ loadLocalesConfig().then(config => {
   localesConfig = config;
 });
 
-export async function getAvailableLocales() {
-  // Ensure locales are loaded
-  if (!localesLoaded) {
-    localesConfig = await loadLocalesConfig();
-  }
-  
-  return localesConfig.map((config) => {
-    return {
-      "key": config.key,
-      "text": config.text
-    };
-  });
-}
-
-// Synchronous version for immediate use
+// Function to get available locales
 export function getAvailableLocalesSync() {
   return localesConfig.map((config) => {
     return {
@@ -75,16 +61,7 @@ export function getAvailableLocalesSync() {
   });
 }
 
-export async function isLocaleSupported(locale: string) {
-  // Ensure locales are loaded
-  if (!localesLoaded) {
-    localesConfig = await loadLocalesConfig();
-  }
-  
-  return localesConfig.map((config) => config.key).includes(locale);
-}
-
-// Synchronous version for immediate use
+// Function to check if a locale is supported
 export function isLocaleSupportedSync(locale: string) {
   return localesConfig.map((config) => config.key).includes(locale);
 }
@@ -132,6 +109,14 @@ export async function setupI18n(options: { locale: string; fallbackLocale: strin
     messages: {},
   });
   
+  // Always load zh_TW as fallback locale first
+  await loadLocaleMessages(i18n, 'zh_TW');
+  
+  // Then load the initial locale if it's different from zh_TW
+  if (initialLocale !== 'zh_TW') {
+    await loadLocaleMessages(i18n, initialLocale);
+  }
+  
   setI18nLanguage(i18n, initialLocale);
   return i18n;
 }
@@ -146,7 +131,9 @@ export function setI18nLanguage(i18n: I18n, locale: string) {
   
   // Set HTML lang attribute if in browser environment
   if (typeof document !== 'undefined') {
-    document.querySelector('html')?.setAttribute('lang', locale);
+    // Convert locale format from xx_YY to xx-YY for HTML lang attribute
+    const htmlLang = locale.replace('_', '-');
+    document.querySelector('html')?.setAttribute('lang', htmlLang);
   }
 }
 

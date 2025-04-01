@@ -6,7 +6,7 @@
         {{ t('APP_TITLE', 'Breakfast333 Menu') }}
       </h1>
       <p class="text-base sm:text-lg md:text-xl text-lightText">
-        {{ t('APP_TAGLINE', 'Start your day with our delicious breakfast options') }}
+        {{ t('APP_TAGLINE', '就是個菜單，沒有點餐功能！') }}
       </p>
     </header>
     
@@ -27,6 +27,7 @@
         </button>
       </div>
       <BreakfastMenu v-else />
+      <ShoppingCart />
     </main>
     
     <footer class="mt-6 sm:mt-8 lg:mt-10 text-center text-xs sm:text-sm text-lightText px-2 sm:px-4">
@@ -40,6 +41,7 @@
 import { useI18n } from 'vue-i18n';
 import BreakfastMenu from './components/BreakfastMenu.vue';
 import LanguageSelector from './components/LanguageSelector.vue';
+import ShoppingCart from './components/ShoppingCart.vue';
 import { useMenuStore } from './store';
 
 const { t } = useI18n();

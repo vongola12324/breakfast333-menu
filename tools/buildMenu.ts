@@ -7,6 +7,11 @@ const JSON_SPACE: Record<string, number> = {
     'TEST': 4,
 };
 
+const TEMPERATURE_SET: Record<string, Array<string>> = {
+    'a': ['DRINKS_ICE', 'DRINKS_HOT'],
+    'b': ['DRINKS_ICE', 'DRINKS_ROOM_TEMPERATURE']
+}
+
 class Dish {
     id: string;
     price: number;
@@ -14,6 +19,8 @@ class Dish {
     takeoutBox: boolean;
     vegetarian: boolean;
     description: boolean;
+    sugar: boolean;
+    temperature: Array<string>;
 
     constructor(
         id: string,
@@ -21,7 +28,9 @@ class Dish {
         priceLarge: number,
         takeoutBox: string,
         vegetarian: string,
-        description: string
+        description: string,
+        sugar: string,
+        temperature: string,
     ) {
         this.id = id;
         this.price = price;
@@ -29,15 +38,18 @@ class Dish {
         this.takeoutBox = takeoutBox?.toLowerCase() == 'v';
         this.vegetarian = vegetarian?.toLowerCase() == 'v';
         this.description = description?.toLowerCase() == 'v';
+        this.sugar = sugar?.toLowerCase() == 'v';
+        switch (temperature?.toLowerCase()) {
+            case 'a':
+                this.temperature = TEMPERATURE_SET['a'];
+                break;
+            case 'b':
+                this.temperature = TEMPERATURE_SET['b'];
+                break;
+            default:
+                this.temperature = [];
+        }
     }
-
-    public toJson = (): object => ({
-        id: this.id,
-        price: this.price,
-        priceLarge: this.priceLarge,
-        takeoutBox: this.takeoutBox,
-        vegetarian: this.vegetarian,
-    });
 }
 
 class LoaderConfig {
@@ -92,6 +104,8 @@ class Loader {
                     data[index]['takeout-box'],
                     data[index]['vegetarian'],
                     data[index]['description'],
+                    data[index]['sugar'],
+                    data[index]['temperature'],
                 );
                 if (currentCategory !== undefined) {
                     currentCategory.set(item_id, dish);
