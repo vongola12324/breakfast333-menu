@@ -121,14 +121,46 @@
           </div>
         </div>
         
+        <!-- Flavor Selection -->
+        <div v-if="hasFlavorOptions" class="mb-4">
+          <h4 class="font-medium mb-2 flex justify-between">
+            <span>{{ translate('OPTION_FLAVORS') }}</span>
+            <span class="text-sm text-gray-500">
+              {{ selectedFlavors.length }} / {{ requiredFlavorCount }}
+            </span>
+          </h4>
+          <div class="grid grid-cols-2 gap-2">
+            <button 
+              v-for="flavor in flavorOptions" 
+              :key="flavor"
+              @click="toggleFlavorSelection(flavor)" 
+              :class="[
+                'py-2 px-3 rounded-md border transition-colors text-center',
+                selectedFlavors.includes(flavor) 
+                  ? 'bg-primary text-white border-primary' 
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50',
+                selectedFlavors.length >= maxFlavorCount && !selectedFlavors.includes(flavor)
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              ]"
+              :disabled="selectedFlavors.length >= maxFlavorCount && !selectedFlavors.includes(flavor)"
+            >
+              {{ translate(flavor) }}
+            </button>
+          </div>
+        </div>
+        
         <!-- Add to Cart Button -->
         <button 
           @click="confirmAddToCart" 
+          :disabled="!areAllRequiredOptionsSelected"
           :class="[
-            'w-full font-bold py-3 rounded-md transition-all duration-300 mt-4',
+            'w-full font-bold py-3 rounded-md transition-all duration-300 mt-2',
             isAddingToCart 
               ? 'bg-green-500 scale-105 text-white' 
-              : 'bg-primary hover:bg-primary/90 text-white'
+              : areAllRequiredOptionsSelected
+                ? 'bg-primary hover:bg-primary/90 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           ]"
         >
           {{ translate('BUTTON_ADD_CART') }}
@@ -154,6 +186,7 @@ const menuStore = useMenuStore();
 const selectedSize = ref('');
 const selectedSweetness = ref('');
 const selectedTemperature = ref('');
+const selectedFlavors = ref<string[]>([]);
 
 // Button animation state
 const isAddingToCart = ref(false);
@@ -181,6 +214,58 @@ const hasTemperatureOption = computed(() => {
          menuStore.selectedItemForCustomization.temperature.length > 0;
 });
 
+const hasFlavorOptions = computed(() => {
+  return menuStore.selectedItemForCustomization?.flavors && 
+         menuStore.selectedItemForCustomization.flavors.options?.length > 0;
+});
+
+const flavorOptions = computed(() => {
+  return menuStore.selectedItemForCustomization?.flavors?.options || [];
+});
+
+const requiredFlavorCount = computed(() => {
+  return menuStore.selectedItemForCustomization?.flavors?.min || 0;
+});
+
+const maxFlavorCount = computed(() => {
+  return menuStore.selectedItemForCustomization?.flavors?.max || 0;
+});
+
+const isFlavorSelectionValid = computed(() => {
+  if (!hasFlavorOptions.value) return true;
+  
+  const min = requiredFlavorCount.value;
+  const max = maxFlavorCount.value;
+  const selected = selectedFlavors.value.length;
+  
+  return selected >= min && selected <= max;
+});
+
+// Check if all required options are selected
+const areAllRequiredOptionsSelected = computed(() => {
+  // Check flavor selection if required
+  if (hasFlavorOptions.value && !isFlavorSelectionValid.value) {
+    return false;
+  }
+  
+  // Check size selection if required
+  if (hasSizeOption.value && !selectedSize.value) {
+    return false;
+  }
+  
+  // Check sweetness selection if required
+  if (hasSweetnessOption.value && !selectedSweetness.value) {
+    return false;
+  }
+  
+  // Check temperature selection if required
+  if (hasTemperatureOption.value && !selectedTemperature.value) {
+    return false;
+  }
+  
+  return true;
+});
+
 // Sweetness levels
 const sweetnessLevels = [
   { value: 'SUGAR_ZERO', label: 'SUGAR_ZERO' },
@@ -194,6 +279,7 @@ watch(() => menuStore.selectedItemForCustomization, (newItem) => {
     // Reset selections
     selectedSize.value = 'MEDIUM_SIZE';
     selectedSweetness.value = 'SUGAR_NORMAL';
+    selectedFlavors.value = [];
     
     // Set default temperature if available
     if (newItem.temperature && newItem.temperature.length > 0) {
@@ -204,14 +290,34 @@ watch(() => menuStore.selectedItemForCustomization, (newItem) => {
   }
 });
 
+// Toggle flavor selection
+const toggleFlavorSelection = (flavor: string) => {
+  const index = selectedFlavors.value.indexOf(flavor);
+  
+  if (index === -1) {
+    // If not selected and we haven't reached max, add it
+    if (selectedFlavors.value.length < maxFlavorCount.value) {
+      selectedFlavors.value.push(flavor);
+    }
+  } else {
+    // If already selected, remove it
+    selectedFlavors.value.splice(index, 1);
+  }
+};
+
 // Confirm add to cart with selected options
 const confirmAddToCart = () => {
   if (!menuStore.selectedItemForCustomization) return;
   
+  // Check if all required options are selected
+  if (!areAllRequiredOptionsSelected.value) {
+    return; // Don't proceed if required options are not selected
+  }
+  
   // Start animation
   isAddingToCart.value = true;
   
-  const isLargeSize = selectedSize.value === 'large';
+  const isLargeSize = selectedSize.value === 'LARGE_SIZE';
   
   // Only pass sweetness if the item has that option
   const sweetness = hasSweetnessOption.value ? selectedSweetness.value : undefined;
@@ -224,7 +330,8 @@ const confirmAddToCart = () => {
     menuStore.selectedItemForCustomization, 
     isLargeSize, 
     sweetness, 
-    temperature
+    temperature,
+    hasFlavorOptions.value ? selectedFlavors.value : []
   );
   
   // Reset animation and close the modal after a short delay

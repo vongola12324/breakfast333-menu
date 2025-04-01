@@ -13,6 +13,11 @@ export interface MenuItem {
   priceLarge?: number;
   sugar?: boolean;
   temperature?: string[];
+  flavors?: {
+    min: number;
+    max: number;
+    options: string[];
+  };
 }
 
 export interface CartItem {
@@ -21,6 +26,7 @@ export interface CartItem {
   isLargeSize: boolean;
   sweetness?: string;
   temperature?: string;
+  selectedFlavors?: string[];
 }
 
 export interface MenuData {
@@ -34,6 +40,11 @@ export interface MenuData {
       description: boolean;
       sugar?: boolean;
       temperature?: string[];
+      flavors?: {
+        min: number;
+        max: number;
+        options: string[];
+      };
     }
   }
 }
@@ -101,8 +112,9 @@ export const useMenuStore = defineStore('menu', {
       const hasSizeOption = item.priceLarge && item.priceLarge > 0;
       const hasSweetnessOption = item.sugar === true;
       const hasTemperatureOption = item.temperature && item.temperature.length > 0;
+      const hasFlavorOptions = item.flavors && item.flavors.options?.length > 0;
       
-      return Boolean(hasSizeOption || hasSweetnessOption || hasTemperatureOption);
+      return Boolean(hasSizeOption || hasSweetnessOption || hasTemperatureOption || hasFlavorOptions);
     },
     
     selectItemForCustomization(item: MenuItem) {
@@ -122,13 +134,14 @@ export const useMenuStore = defineStore('menu', {
       this.selectedItemForCustomization = null;
     },
     
-    addToCart(menuItem: MenuItem, isLargeSize: boolean = false, sweetness: string = '', temperature: string = '') {
+    addToCart(menuItem: MenuItem, isLargeSize: boolean = false, sweetness: string = '', temperature: string = '', selectedFlavors: string[] = []) {
       // Check if the item is already in the cart with the same customizations
       const existingItemIndex = this.cart.findIndex(
         item => item.menuItem.id === menuItem.id && 
                item.isLargeSize === isLargeSize &&
                item.sweetness === sweetness &&
-               item.temperature === temperature
+               item.temperature === temperature &&
+               JSON.stringify(item.selectedFlavors) === JSON.stringify(selectedFlavors)
       );
       
       if (existingItemIndex !== -1) {
@@ -141,7 +154,8 @@ export const useMenuStore = defineStore('menu', {
           quantity: 1,
           isLargeSize,
           sweetness,
-          temperature
+          temperature,
+          selectedFlavors
         });
       }
     },
@@ -208,7 +222,8 @@ export const useMenuStore = defineStore('menu', {
               takeoutBox: item.takeoutBox,
               priceLarge: item.priceLarge > 0 ? item.priceLarge : undefined,
               sugar: item.sugar,
-              temperature: item.temperature
+              temperature: item.temperature,
+              flavors: item.flavors
             });
             if (this.selectedCategory === '') {
               this.setCategory(categoryName);

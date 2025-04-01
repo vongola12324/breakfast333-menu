@@ -21,6 +21,8 @@ class Dish {
     description: boolean;
     sugar: boolean;
     temperature: Array<string>;
+    flavors: Record<string, number | Array<string>>;
+    addons: Record<string, number>;
 
     constructor(
         id: string,
@@ -31,6 +33,8 @@ class Dish {
         description: string,
         sugar: string,
         temperature: string,
+        flavors: string,
+        addons: string,
     ) {
         this.id = id;
         this.price = price;
@@ -48,6 +52,14 @@ class Dish {
                 break;
             default:
                 this.temperature = [];
+        }
+        this.flavors = {};
+        if (flavors) {
+            this.flavors = JSON.parse(flavors);
+        }
+        this.addons = {}
+        if (addons) {
+            this.addons = JSON.parse(addons);
         }
     }
 }
@@ -106,6 +118,8 @@ class Loader {
                     data[index]['description'],
                     data[index]['sugar'],
                     data[index]['temperature'],
+                    data[index]['flavors'],
+                    data[index]['addons'],
                 );
                 if (currentCategory !== undefined) {
                     currentCategory.set(item_id, dish);

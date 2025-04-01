@@ -52,7 +52,7 @@
         <div v-else class="flex-grow">
           <div 
             v-for="(item, index) in cartItems" 
-            :key="`${item.menuItem.id}-${item.isLargeSize ? 'large' : 'regular'}-${item.sweetness || ''}-${item.temperature || ''}`"
+            :key="`${item.menuItem.id}-${item.isLargeSize ? 'large' : 'regular'}-${item.sweetness || ''}-${item.temperature || ''}-${item.selectedFlavors ? item.selectedFlavors.join('-') : ''}`"
             class="py-3 border-b flex justify-between items-start"
           >
             <div class="flex-grow pr-4">
@@ -71,6 +71,11 @@
                 <!-- Temperature option -->
                 <p v-if="item.temperature">
                   {{ t(item.temperature) }}
+                </p>
+                
+                <!-- Flavor options -->
+                <p v-if="item.selectedFlavors && item.selectedFlavors.length > 0">
+                  {{ item.selectedFlavors.map(flavor => t(flavor)).join(', ') }}
                 </p>
               </div>
               <div class="mt-1 flex items-center">
@@ -206,8 +211,13 @@
                     </span>
                     
                     <!-- Temperature option -->
-                    <span v-if="item.temperature">
+                    <span v-if="item.temperature" class="mr-2">
                       {{ t(item.temperature, {}, {locale: 'zh-TW'}) }}
+                    </span>
+                    
+                    <!-- Flavor options -->
+                    <span v-if="item.selectedFlavors && item.selectedFlavors.length > 0">
+                      {{ item.selectedFlavors.map(flavor => t(flavor, {}, {locale: 'zh-TW'})).join(', ') }}
                     </span>
                   </div>
                 </div>
@@ -238,9 +248,6 @@
           <div class="flex justify-between text-xl font-bold mb-2">
             <span>{{ t('TOTAL_PRICE', {}, {locale: 'zh-TW'}) }}(Total)</span>
             <span>NT${{ cartTotal.toFixed(0) }}</span>
-          </div>
-          <div v-if="orderType === 'takeout'" class="text-sm text-gray-500 mb-6">
-            {{ t('TAKEOUT_BOX_NOTE', { takeout_box_price: takeoutBoxFee }, {locale: 'zh-TW'}) }}
           </div>
         </div>
       </div>
