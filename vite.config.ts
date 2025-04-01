@@ -22,7 +22,7 @@ export default defineConfig({
   // Base path for GitHub Pages
   // Change this to match your GitHub repository name if needed
   // e.g., if your repo is username.github.io/breakfast-menu, use "/breakfast-menu/"
-  base: "/breakfast333-menu/",
+  base: "/",
   
   // Configure server to properly serve files from public directory
   server: {
