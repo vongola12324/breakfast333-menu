@@ -1,14 +1,12 @@
 <template>
   <div class="mt-4 sm:mt-6 lg:mt-8 relative">
     <!-- Category filters -->
-    <div class="flex overflow-x-auto pb-2 mb-6 gap-2 scrollbar-thin scrollbar-thumb-gray-300
-     scrollbar-track-transparent"
-     >
+    <div class="flex flex-wrap justify-center pb-2 mx-auto">
       <button 
         v-for="category in categories" 
         :key="category"
         :class="[
-          'px-3 py-2 md:px-4 rounded-full text-xs md:text-sm whitespace-nowrap border transition-colors flex-shrink-0',
+          'px-3 py-2 md:px-4 rounded-full text-xs md:text-sm whitespace-nowrap border transition-colors m-1',
           selectedCategory === category 
             ? 'bg-primary text-white border-primary' 
             : 'bg-transparent text-gray-700 border-gray-300 hover:bg-gray-100'
@@ -18,6 +16,9 @@
         {{ translate(`CATEGORY_${category}`) }}
       </button>
     </div>
+    
+    <!-- Divider -->
+    <hr class="border-gray-200 w-full max-w-4xl mx-auto mb-6" />
 
     <!-- Menu items grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
